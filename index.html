@@ -15,6 +15,11 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #3498db; color: white; }
+        
+        /* Шинэ тэмдэглэлийн хэсгийн загвар */
+        textarea { width: 100%; height: 120px; border: 1px solid #ccc; border-radius: 6px; padding: 10px; font-family: inherit; resize: vertical; box-sizing: border-box; background-color: #fff9db; }
+        .save-btn { background-color: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 5px; font-weight: bold; }
+        .save-btn:hover { background-color: #27ae60; }
     </style>
 </head>
 <body>
@@ -76,17 +81,35 @@
         </div>
 
         <div class="box">
-            <h2>✍️ Миний тэмдэглэлүүд</h2>
-            <div style="background-color: #fff9db; padding: 15px; border-left: 5px solid #f59f00; border-radius: 4px; margin-bottom: 10px;">
-                <h4 style="margin: 0 0 5px 0; color: #f59f00;">📌 Санамж</h4>
-                <p style="margin: 0; font-size: 14px;">Солонгос хэлний 2-р номын 2-р сэдэв болох <b>"Болзоо" (약속)</b> хичээлийн шинэ үгсийг цээжилж дуусгах.</p>
-            </div>
-            <div style="background-color: #e7f5ff; padding: 15px; border-left: 5px solid #228be6; border-radius: 4px;">
-                <h4 style="margin: 0 0 5px 0; color: #228be6;">💡 Кодлох зөвлөгөө</h4>
-                <p style="margin: 0; font-size: 14px;">Вэбсайтдаа өөрчлөлт оруулах бүрдээ GitHub дээр хадгалахад Vercel шууд автоматаар шинэчилнэ.</p>
-            </div>
+            <h2>✍️ Шууд тэмдэглэл хөтлөх</h2>
+            <p style="font-size: 13px; color: #666; margin-top: 0;">Энд хүссэн зүйлээ шууд бичиж болно. (Хадгалах товч дарахад таны хөтөч дээр хадгалагдана):</p>
+            <textarea id="myNote" placeholder="Өнөөдрийн сурсан зүйл, санамжаа энд бичээрэй..."></textarea>
+            <button class="save-btn" onclick="saveNote()">Хадгалах</button>
         </div>
     </div>
 
+    <script>
+        // Вэбсайт нээгдэхэд өмнө нь бичээд хадгалсан байсан тэмдэглэлийг гаргаж ирэх
+        document.getElementById("myNote").value = localStorage.getItem("user_note") || "";
+
+        // Хадгалах товч дарахад компьютерын санах ойд бичсэн зүйлийг үлдээх
+        function saveNote() {
+            var noteContent = document.getElementById("myNote").value;
+            localStorage.setItem("user_note", noteContent);
+            alert("Тэмдэглэл таны компьютер дээр амжилттай хадгалагдлаа! 🎉");
+        }
+    </script>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+!
