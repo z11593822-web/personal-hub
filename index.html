@@ -7,19 +7,31 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 20px; color: #333; }
         h1 { color: #2c3e50; text-align: center; }
         .container { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
-        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 45%; }
-        h2 { border-bottom: 2px solid #3498db; padding-bottom: 10px; color: #2980b9; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 45%; box-sizing: border-box; }
+        .full-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 92%; box-sizing: border-box; margin: 20px auto 0 auto; }
+        h2 { border-bottom: 2px solid #3498db; padding-bottom: 10px; color: #2980b9; margin-top: 0; }
         ul { list-style: none; padding: 0; }
-        li { padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; }
-        input[type="checkbox"] { margin-right: 10px; }
+        li { padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
+        .li-content { display: flex; align-items: center; }
+        input[type="checkbox"] { margin-right: 10px; cursor: pointer; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #3498db; color: white; }
         
-        /* Шинэ тэмдэглэлийн хэсгийн загвар */
-        textarea { width: 100%; height: 120px; border: 1px solid #ccc; border-radius: 6px; padding: 10px; font-family: inherit; resize: vertical; box-sizing: border-box; background-color: #fff9db; }
-        .save-btn { background-color: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 5px; font-weight: bold; }
+        /* Оролтын талбаруудын загвар */
+        .input-group { margin-top: 15px; display: flex; gap: 5px; flex-wrap: wrap; }
+        input[type="text"], textarea { border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; font-family: inherit; font-size: 14px; }
+        .input-group input[type="text"] { flex: 1; min-width: 80px; }
+        textarea { width: 100%; height: 120px; resize: vertical; box-sizing: border-box; background-color: #fff9db; }
+        
+        /* Товчлууруудын загвар */
+        button { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .add-btn { background-color: #3498db; color: white; }
+        .add-btn:hover { background-color: #2980b9; }
+        .save-btn { background-color: #2ecc71; color: white; margin-top: 5px; width: 100%; padding: 10px; font-size: 15px; }
         .save-btn:hover { background-color: #27ae60; }
+        .delete-btn { background: none; color: #e74c3c; font-size: 16px; padding: 0 5px; }
+        .delete-btn:hover { color: #c0392b; }
     </style>
 </head>
 <body>
@@ -29,79 +41,34 @@
     <div class="container">
         <div class="box">
             <h2>📅 Өдөрт хийх зүйлс</h2>
-            <ul>
-                <li><input type="checkbox"> Өглөө 5 солонгос үг цээжлэх</li>
-                <li><input type="checkbox"> Түүвэрлэсэн сургалтын материалаа хэвлэж бэлдэх</li>
-                <li><input type="checkbox"> Код бичих хичээл үзэх</li>
-            </ul>
+            <ul id="todoList"></ul>
+            <div class="input-group">
+                <input type="text" id="todoInput" placeholder="Шинэ төлөвлөгөө бичих...">
+                <button class="add-btn" onclick="addTodo()">Нэмэх</button>
+            </div>
         </div>
 
         <div class="box">
-            <h2>🇰🇷 Солонгос хэл - Болзоо / Цаг товлох (Үгс)</h2>
-            <table>
-                <tr>
-                    <th>Гадаад үг</th>
-                    <th>Орчуулга</th>
-                    <th>Тэмдэглэл</th>
-                </tr>
-                <tr>
-                    <td>약속 (Yak-sok)</td>
-                    <td>Болзоо / Цаг товлох</td>
-                    <td>2-р ном: 2-р сэдэв</td>
-                </tr>
-                <tr>
-                    <td>공부하다 (Gong-bu-ha-da)</td>
-                    <td>Сурах / Хичээллэх</td>
-                    <td>Өдөр бүр хэрэглэх үг</td>
-                </tr>
+            <h2>🇰🇷 Солонгос хэл - Шинэ үгс</h2>
+            <table id="wordTable">
+                <thead>
+                    <tr>
+                        <th>Гадаад үг</th>
+                        <th>Орчуулга</th>
+                        <th>Тэмдэглэл</th>
+                        <th>Үйлдэл</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
             </table>
+            <div class="input-group">
+                <input type="text" id="wordKr" placeholder="Үг (공부하다)">
+                <input type="text" id="wordMn" placeholder="Орчуулга">
+                <input type="text" id="wordNote" placeholder="Тэмдэглэл">
+                <button class="add-btn" onclick="addWord()">Нэмэх</button>
+            </div>
         </div>
     </div>
-
-    <div class="container" style="margin-top: 20px;">
-        <div class="box">
-            <h2>📝 Солонгос хэлний дүрэм</h2>
-            <table>
-                <tr>
-                    <th>Дүрэм</th>
-                    <th>Утга / Хэрэглээ</th>
-                    <th>Жишээ өгүүлбэр</th>
-                </tr>
-                <tr>
-                    <td><b>-(으)ㄹ까요?</b></td>
-                    <td>...хэрхэх үү? (Санал тавих)</td>
-                    <td>내일 만날까요? <br><small>(Маргааш уулзах уу?)</small></td>
-                </tr>
-                <tr>
-                    <td><b>-(으)ㅂ시다</b></td>
-                    <td>...цгаая / өе (Уриалах)</td>
-                    <td>같이 공부합시다. <br><small>(Хамт сурцгаая.)</small></td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="box">
-            <h2>✍️ Шууд тэмдэглэл хөтлөх</h2>
-            <p style="font-size: 13px; color: #666; margin-top: 0;">Энд хүссэн зүйлээ шууд бичиж болно. (Хадгалах товч дарахад таны хөтөч дээр хадгалагдана):</p>
-            <textarea id="myNote" placeholder="Өнөөдрийн сурсан зүйл, санамжаа энд бичээрэй..."></textarea>
-            <button class="save-btn" onclick="saveNote()">Хадгалах</button>
-        </div>
-    </div>
-
-    <script>
-        // Вэбсайт нээгдэхэд өмнө нь бичээд хадгалсан байсан тэмдэглэлийг гаргаж ирэх
-        document.getElementById("myNote").value = localStorage.getItem("user_note") || "";
-
-        // Хадгалах товч дарахад компьютерын санах ойд бичсэн зүйлийг үлдээх
-        function saveNote() {
-            var noteContent = document.getElementById("myNote").value;
-            localStorage.setItem("user_note", noteContent);
-            alert("Тэмдэглэл таны компьютер дээр амжилттай хадгалагдлаа! 🎉");
-        }
-    </script>
-
-</body>
-</html>
 
 
 
