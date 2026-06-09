@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Зуны амралт 2026</title>
+  <title>Миний Сурлагын Төв & Зуны амралт 2026</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/webfont/tabler-icons.min.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,17 +12,36 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #f5f3ee;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
       padding: 2rem 1rem;
       color: #1a1a18;
     }
 
-    .container { width: 100%; max-width: 640px; }
+    h1 { text-align: center; margin-bottom: 2rem; color: #1a1a18; font-weight: 600; }
 
-    .header { margin-bottom: 1.5rem; }
-    .header h1 { font-size: 26px; font-weight: 600; color: #1a1a18; margin-bottom: 4px; }
-    .header p { font-size: 14px; color: #6b6b68; }
+    /* Хоёр багана болгох үндсэн бүтэц */
+    .main-layout {
+      display: flex;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: flex-start;
+    }
+
+    .column {
+      flex: 1;
+      background: transparent;
+    }
+
+    .box {
+      background: white;
+      border-radius: 12px;
+      border: 0.5px solid #e0ddd5;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      margin-bottom: 1.5rem;
+    }
+
+    h2 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #1a1a18; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0ede8; padding-bottom: 8px;}
 
     .stats {
       display: grid;
@@ -31,13 +50,14 @@
       margin-bottom: 1rem;
     }
     .stat {
-      background: white;
-      border-radius: 10px;
-      border: 0.5px solid #e0ddd5;
-      padding: 14px 16px;
+      background: #fbfbfa;
+      border-radius: 8px;
+      border: 0.5px solid #e8e5dd;
+      padding: 10px 12px;
+      text-align: center;
     }
-    .stat-label { font-size: 12px; color: #6b6b68; margin-bottom: 4px; }
-    .stat-value { font-size: 24px; font-weight: 600; color: #1a1a18; }
+    .stat-label { font-size: 11px; color: #6b6b68; margin-bottom: 2px; }
+    .stat-value { font-size: 18px; font-weight: 600; color: #1a1a18; }
     .stat-value.green { color: #1D9E75; }
 
     .progress-bar {
@@ -54,7 +74,7 @@
       transition: width 0.4s ease;
     }
 
-    .add-section { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+    .add-section { display: flex; gap: 8px; margin-bottom: 1.2rem; }
     .add-section input {
       flex: 1;
       font-size: 14px;
@@ -63,254 +83,74 @@
       border-radius: 8px;
       outline: none;
       background: white;
-      color: #1a1a18;
     }
     .add-section input:focus { border-color: #888; }
+    
     .cat-select {
       font-size: 13px;
       padding: 8px 10px;
       border: 0.5px solid #d0cdc5;
       border-radius: 8px;
       background: white;
-      color: #1a1a18;
+      width: 120px;
       cursor: pointer;
-      outline: none;
-      width: 130px;
     }
-    .add-btn {
+
+    button {
       font-size: 13px;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border: 0.5px solid #d0cdc5;
       border-radius: 8px;
       background: white;
-      color: #1a1a18;
       cursor: pointer;
-      white-space: nowrap;
       display: flex;
       align-items: center;
       gap: 4px;
+      font-weight: 500;
     }
-    .add-btn:hover { background: #f0ede8; }
+    button:hover { background: #f0ede8; }
+
+    .clear-btn {
+      background-color: #fff0f0;
+      color: #E24B4A;
+      border-color: #fcdede;
+      width: 100%;
+      justify-content: center;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    .clear-btn:hover { background-color: #ffe5e5; border-color: #E24B4A; }
 
     .categories { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
     .cat-pill {
       font-size: 12px;
-      padding: 5px 12px;
+      padding: 4px 10px;
       border-radius: 20px;
       border: 0.5px solid #d0cdc5;
-      cursor: pointer;
       color: #6b6b68;
-      background: transparent;
     }
-    .cat-pill.active {
-      border-color: #888;
-      color: #1a1a18;
-      background: white;
-    }
-    .cat-pill:hover { background: #f0ede8; }
+    .cat-pill.active { border-color: #888; color: #1a1a18; background: #fbfbfa; }
 
     .tasks { display: flex; flex-direction: column; gap: 8px; }
-
     .task-item {
-      background: white;
-      border: 0.5px solid #e0ddd5;
-      border-radius: 12px;
-      padding: 12px 14px;
+      background: #fbfbfa;
+      border: 0.5px solid #e8e5dd;
+      border-radius: 10px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      transition: opacity 0.2s;
+      gap: 10px;
     }
-    .task-item.done { opacity: 0.45; }
+    .task-item.done { opacity: 0.5; }
     .task-item.done .task-name { text-decoration: line-through; color: #888; }
 
     .task-check {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       border: 1.5px solid #d0cdc5;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
       background: transparent;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .task-check.checked { background: #1D9E75; border-color: #1D9E75; }
-    .task-check:hover:not(.checked) { border-color: #1D9E75; }
-
-    .task-name { flex: 1; font-size: 14px; color: #1a1a18; }
-
-    .task-cat {
-      font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 10px;
-      white-space: nowrap;
-    }
-    .cat-аялал { background: #E6F1FB; color: #0C447C; }
-    .cat-хобби  { background: #EEEDFE; color: #3C3489; }
-    .cat-нийгэм { background: #E1F5EE; color: #085041; }
-    .cat-өөрийгөө { background: #FAEEDA; color: #633806; }
-
-    .delete-btn {
-      background: transparent;
-      border: 0.5px solid #e0ddd5;
-      border-radius: 6px;
-      cursor: pointer;
-      color: #aaa;
-      font-size: 13px;
-      padding: 4px 8px;
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-    }
-    .delete-btn:hover { color: #E24B4A; border-color: #E24B4A; background: #fff0f0; }
-
-    .empty {
-      text-align: center;
-      padding: 3rem;
-      color: #aaa;
-      font-size: 14px;
-    }
-    .empty i { font-size: 32px; display: block; margin-bottom: 8px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>☀️ Зуны амралт 2026</h1>
-      <p>Зуны хийх зүйлсийн жагсаалт</p>
-    </div>
-
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-label">Нийт</div>
-        <div class="stat-value" id="total">0</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Дууссан</div>
-        <div class="stat-value green" id="done-count">0</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Үлдсэн</div>
-        <div class="stat-value" id="left">0</div>
-      </div>
-    </div>
-
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress" style="width:0%"></div>
-    </div>
-
-    <div class="add-section">
-      <input type="text" id="task-input" placeholder="Шинэ зорилт нэмэх..." />
-      <select class="cat-select" id="cat-input">
-        <option value="аялал">✈️ Аялал</option>
-        <option value="хобби">🎨 Хобби</option>
-        <option value="нийгэм">👥 Нийгэм</option>
-        <option value="өөрийгөө">🌱 Өөрийгөө хөгжүүлэх</option>
-      </select>
-      <button class="add-btn" onclick="addTask()">
-        <i class="ti ti-plus"></i> Нэмэх
-      </button>
-    </div>
-
-    <div class="categories">
-      <button class="cat-pill active" onclick="filterCat('all', this)">Бүгд</button>
-      <button class="cat-pill" onclick="filterCat('аялал', this)">✈️ Аялал</button>
-      <button class="cat-pill" onclick="filterCat('хобби', this)">🎨 Хобби</button>
-      <button class="cat-pill" onclick="filterCat('нийгэм', this)">👥 Нийгэм</button>
-      <button class="cat-pill" onclick="filterCat('өөрийгөө', this)">🌱 Өөрийгөө</button>
-    </div>
-
-    <div class="tasks" id="task-list"></div>
-  </div>
-
-  <script>
-    const CAT_LABELS = {
-      аялал: '✈️ Аялал',
-      хобби: '🎨 Хобби',
-      нийгэм: '👥 Нийгэм',
-      өөрийгөө: '🌱 Өөрийгөө хөгжүүлэх'
-    };
-
-    let tasks = JSON.parse(localStorage.getItem('summer-tasks') || 'null') || [
-      { id: 1, name: 'Говийн аялал хийх', cat: 'аялал', done: false },
-      { id: 2, name: 'Шинэ хэл сурах эхлэх', cat: 'өөрийгөө', done: false },
-      { id: 3, name: 'Зураг зурах курс дуусгах', cat: 'хобби', done: false },
-      { id: 4, name: 'Гэр бүлтэйгээ пикник хийх', cat: 'нийгэм', done: true },
-    ];
-    let nextId = Math.max(0, ...tasks.map(t => t.id)) + 1;
-    let currentFilter = 'all';
-
-    function save() {
-      localStorage.setItem('summer-tasks', JSON.stringify(tasks));
-    }
-
-    function render() {
-      const list = document.getElementById('task-list');
-      const filtered = currentFilter === 'all' ? tasks : tasks.filter(t => t.cat === currentFilter);
-      const total = tasks.length;
-      const done = tasks.filter(t => t.done).length;
-
-      document.getElementById('total').textContent = total;
-      document.getElementById('done-count').textContent = done;
-      document.getElementById('left').textContent = total - done;
-      document.getElementById('progress').style.width = total ? Math.round(done / total * 100) + '%' : '0%';
-
-      if (!filtered.length) {
-        list.innerHTML = '<div class="empty"><i class="ti ti-sun"></i>Одоохондоо хоосон байна</div>';
-        return;
-      }
-
-      list.innerHTML = filtered.map(t => `
-        <div class="task-item ${t.done ? 'done' : ''}">
-          <button class="task-check ${t.done ? 'checked' : ''}" onclick="toggle(${t.id})">
-            ${t.done ? '<i class="ti ti-check" style="font-size:12px;color:white"></i>' : ''}
-          </button>
-          <span class="task-name">${t.name}</span>
-          <span class="task-cat cat-${t.cat}">${CAT_LABELS[t.cat] || t.cat}</span>
-          <button class="delete-btn" onclick="remove(${t.id})">Хасах</button>
-        </div>
-      `).join('');
-    }
-
-    function toggle(id) {
-      const t = tasks.find(t => t.id === id);
-      if (t) t.done = !t.done;
-      save(); render();
-    }
-
-    function remove(id) {
-      tasks = tasks.filter(t => t.id !== id);
-      save(); render();
-    }
-
-    function addTask() {
-      const input = document.getElementById('task-input');
-      const cat = document.getElementById('cat-input').value;
-      const name = input.value.trim();
-      if (!name) return;
-      tasks.push({ id: nextId++, name, cat, done: false });
-      input.value = '';
-      save(); render();
-    }
-
-    function filterCat(cat, btn) {
-      currentFilter = cat;
-      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      render();
-    }
-
-    document.getElementById('task-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') addTask();
-    });
-
-    render();
-  </script>
-</body>
-</html>
-
-
-!
+      padding: 0; flex-shrink: 0;
