@@ -154,3 +154,214 @@
       justify-content: center;
       background: transparent;
       padding: 0; flex-shrink: 0;
+    }
+    .task-check.checked { background: #1D9E75; border-color: #1D9E75; }
+
+    .task-name { flex: 1; font-size: 14px; }
+    .task-cat { font-size: 11px; padding: 2px 8px; border-radius: 8px; white-space: nowrap; }
+    .cat-аялал { background: #E6F1FB; color: #0C447C; }
+    .cat-хобби  { background: #EEEDFE; color: #3C3489; }
+    .cat-нийгэм { background: #E1F5EE; color: #085041; }
+    .cat-өөрийгөө { background: #FAEEDA; color: #633806; }
+
+    .delete-btn { background: transparent; border: none; color: #aaa; padding: 4px; font-size: 14px; }
+    .delete-btn:hover { color: #E24B4A; }
+
+    .empty { text-align: center; padding: 2rem; color: #aaa; font-size: 13px; }
+    
+    @media (max-width: 768px) {
+      .main-layout { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>☀️ Миний Хувийн Сурлагын Төв</h1>
+
+  <div class="main-layout">
+    
+    <div class="column">
+      <div class="box">
+        <h2>🎯 Ерөнхий том зорилтууд</h2>
+        
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Нийт</div><div class="stat-value" id="total">0</div></div>
+          <div class="stat"><div class="stat-label">Дууссан</div><div class="stat-value green" id="done-count">0</div></div>
+          <div class="stat"><div class="stat-label">Үлдсэн</div><div class="stat-value" id="left">0</div></div>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress" style="width:0%"></div>
+        </div>
+
+        <div class="add-section">
+          <input type="text" id="task-input" placeholder="Шинэ том зорилт нэмэх..." />
+          <select class="cat-select" id="cat-input">
+            <option value="аялал">✈️ Аялал</option>
+            <option value="хобби">🎨 Хобби</option>
+            <option value="нийгэм">👥 Нийгэм</option>
+            <option value="өөрийгөө">🌱 Өөрийгөө</option>
+          </select>
+          <button onclick="addTask()"><i class="ti ti-plus"></i></button>
+        </div>
+
+        <div class="categories">
+          <button class="cat-pill active" onclick="filterCat('all', this)">Бүгд</button>
+          <button class="cat-pill" onclick="filterCat('аялал', this)">✈️ Аялал</button>
+          <button class="cat-pill" onclick="filterCat('хобби', this)">🎨 Хобби</button>
+          <button class="cat-pill" onclick="filterCat('нийгэм', this)">👥 Нийгэм</button>
+          <button class="cat-pill" onclick="filterCat('өөрийгөө', this)">🌱 Өөрийгөө</button>
+        </div>
+
+        <div class="tasks" id="task-list"></div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="box">
+        <h2>📅 Өдөр тутмын төлөвлөгөө</h2>
+        <p style="font-size: 13px; color: #6b6b68; margin-bottom: 12px;">Өглөө бүр хийх зүйлсээ бичиж, өдрийн төгсгөлд шинэчилж байгаарай.</p>
+        
+        <div class="add-section">
+          <input type="text" id="daily-input" placeholder="Өнөөдөр хийх зүйл нэмэх..." />
+          <button onclick="addDailyTask()"><i class="ti ti-plus"></i> Нэмэх</button>
+        </div>
+
+        <div class="tasks" id="daily-task-list"></div>
+
+        <button class="clear-btn" onclick="clearDailyTasks()">
+          <i class="ti ti-refresh"></i> Өдрийн жагсаалтыг шинэчлэх (Цэвэрлэх)
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const CAT_LABELS = { аялал: '✈️ Аялал', хобби: '🎨 Хобби', нийгэм: '👥 Нийгэм', өөрийгөө: '🌱 Өөрийгөө' };
+
+    // 1. ЕРӨНХИЙ ТОМ ЗОРИЛТУУДЫН ӨГӨГДӨЛ
+    let tasks = JSON.parse(localStorage.getItem('summer-tasks')) || [
+      { id: 1, name: 'Говийн аялал хийх', cat: 'аялал', done: false },
+      { id: 2, name: 'Шинэ хэл сурах эхлэх', cat: 'өөрийгөө', done: false },
+      { id: 3, name: 'Зураг зурах курс дуусгах', cat: 'хобби', done: false }
+    ];
+    let nextId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+    let currentFilter = 'all';
+
+    // 2. ӨДӨР ТУТМЫН ТӨЛӨВЛӨГӨӨНИЙ ӨГӨГДӨЛ
+    let dailyTasks = JSON.parse(localStorage.getItem('daily-tasks')) || [
+      { id: 1, name: 'Өглөө 5 солонгос үг цээжлэх', done: false },
+      { id: 2, name: 'Код бичих дасгал хийх', done: false }
+    ];
+    let nextDailyId = dailyTasks.length > 0 ? Math.max(...dailyTasks.map(t => t.id)) + 1 : 1;
+
+    function saveAll() {
+      localStorage.setItem('summer-tasks', JSON.stringify(tasks));
+      localStorage.setItem('daily-tasks', JSON.stringify(dailyTasks));
+    }
+
+    function render() {
+      // Ерөнхий том зорилтуудыг зурах
+      const list = document.getElementById('task-list');
+      const filtered = currentFilter === 'all' ? tasks : tasks.filter(t => t.cat === currentFilter);
+      const total = tasks.length;
+      const done = tasks.filter(t => t.done).length;
+
+      document.getElementById('total').textContent = total;
+      document.getElementById('done-count').textContent = done;
+      document.getElementById('left').textContent = total - done;
+      document.getElementById('progress').style.width = total ? Math.round(done / total * 100) + '%' : '0%';
+
+      if (!filtered.length) {
+        list.innerHTML = '<div class="empty"><i class="ti ti-sun"></i>Одоохондоо хоосон байна</div>';
+      } else {
+        list.innerHTML = filtered.map(t => `
+          <div class="task-item ${t.done ? 'done' : ''}">
+            <button class="task-check ${t.done ? 'checked' : ''}" onclick="toggle(${t.id})">
+              ${t.done ? '<i class="ti ti-check" style="font-size:11px;color:white"></i>' : ''}
+            </button>
+            <span class="task-name">${t.name}</span>
+            <span class="task-cat cat-${t.cat}">${CAT_LABELS[t.cat] || t.cat}</span>
+            <button class="delete-btn" onclick="remove(${t.id})"><i class="ti ti-trash"></i></button>
+          </div>
+        `).join('');
+      }
+
+      // Өдөр тутмын төлөвлөгөөг зурах
+      const dailyList = document.getElementById('daily-task-list');
+      if (!dailyTasks.length) {
+        dailyList.innerHTML = '<div class="empty"><i class="ti ti-calendar-event"></i>Өнөөдрийн төлөвлөгөө хоосон байна. Шинийг нэмээрэй!</div>';
+      } else {
+        dailyList.innerHTML = dailyTasks.map(dt => `
+          <div class="task-item ${dt.done ? 'done' : ''}">
+            <button class="task-check ${dt.done ? 'checked' : ''}" onclick="toggleDaily(${dt.id})">
+              ${dt.done ? '<i class="ti ti-check" style="font-size:11px;color:white"></i>' : ''}
+            </button>
+            <span class="task-name">${dt.name}</span>
+            <button class="delete-btn" onclick="removeDaily(${dt.id})"><i class="ti ti-trash"></i></button>
+          </div>
+        `).join('');
+      }
+    }
+
+    // --- ЕРӨНХИЙ ТОМ ЗОРИЛТЫН ФУНКЦУУД ---
+    function toggle(id) {
+      const t = tasks.find(t => t.id === id);
+      if (t) t.done = !t.done;
+      saveAll(); render();
+    }
+    function remove(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      saveAll(); render();
+    }
+    function addTask() {
+      const input = document.getElementById('task-input');
+      const cat = document.getElementById('cat-input').value;
+      const name = input.value.trim();
+      if (!name) return;
+      tasks.push({ id: nextId++, name, cat, done: false });
+      input.value = '';
+      saveAll(); render();
+    }
+    function filterCat(cat, btn) {
+      currentFilter = cat;
+      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    }
+
+    // --- ӨДӨР ТУТМЫН ТӨЛӨВЛӨГӨӨНИЙ ФУНКЦУУД ---
+    function addDailyTask() {
+      const input = document.getElementById('daily-input');
+      const name = input.value.trim();
+      if (!name) return;
+      dailyTasks.push({ id: nextDailyId++, name, done: false });
+      input.value = '';
+      saveAll(); render();
+    }
+    function toggleDaily(id) {
+      const dt = dailyTasks.find(dt => dt.id === id);
+      if (dt) dt.done = !dt.done;
+      saveAll(); render();
+    }
+    function removeDaily(id) {
+      dailyTasks = dailyTasks.filter(dt => dt.id !== id);
+      saveAll(); render();
+    }
+    // Өдөр бүр шинэчлэх (Бүгдийг устгах) функц
+    function clearDailyTasks() {
+      if (confirm("Өнөөдрийн жагсаалтыг бүрэн цэвэрлэж, шинээр эхлүүлэх үү?")) {
+        dailyTasks = [];
+        saveAll(); render();
+      }
+    }
+
+    // Enter товчлуур дарахад нэмдэг болгох
+    document.getElementById('task-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+    document.getElementById('daily-input').addEventListener('keydown', e => { if (e.key === 'Enter') addDailyTask(); });
+
+    render();
+  </script>
+</body>
+</html>
